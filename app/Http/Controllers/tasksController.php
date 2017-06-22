@@ -43,6 +43,11 @@ class tasksController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'status' => 'required|max:10',      // 2017/06/22 追加
+            'content' => 'required|max:255',    // 2017/06/22 追加
+        ]);
+
         $task = new task;
         $task->status = $request->status;   // 2017/06/22 追加
         $task->content = $request->content;
@@ -86,6 +91,11 @@ class tasksController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->validate($request, [
+            'status' => 'required|max:10',      // 2017/06/22 追加
+            'content' => 'required|max:255',    // 2017/06/22 追加
+        ]);
+
         $task = task::find($id);
         $task->status = $request->status;   // 2017/06/22追加
         $task->content = $request->content;
