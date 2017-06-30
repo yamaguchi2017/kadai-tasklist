@@ -12,9 +12,13 @@
 */
 
 //Route::get('/', 'tasksController@index');
+/*
 Route::get('/', function () {
     return view('welcome');
 });
+*/
+
+Route::get('/', 'WelcomeController@index');
 
 // ユーザ登録
 Route::get('signup', 'Auth\AuthController@getRegister')->name('signup.get');
@@ -26,4 +30,7 @@ Route::post('login', 'Auth\AuthController@postLogin')->name('login.post');
 Route::get('logout', 'Auth\AuthController@getLogout')->name('logout.get');
 
 // タスクリストの操作
-Route::resource('tasks', 'tasksController');
+Route::group(['middleware' => 'auth'], function () {
+    Route::resource('tasks', 'tasksController');
+    Route::resource('users', 'usersController', ['only' => ['store','show', 'update', 'destroy']]);
+});

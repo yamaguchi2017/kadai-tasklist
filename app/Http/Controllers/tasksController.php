@@ -18,7 +18,8 @@ class tasksController extends Controller
      */
     public function index()
     {
-        $tasks = task::orderBy('id','asc')
+        $tasks = task::paginate(3)
+                ->orderBy('id','asc')
                 ->get();
 
         return view('tasks.index', ['tasks' => $tasks, ]);
@@ -49,10 +50,11 @@ class tasksController extends Controller
             'content' => 'required|max:255',    // 2017/06/22 追加
         ]);
 
-        $task = new task;
-        $task->status = $request->status;   // 2017/06/22 追加
-        $task->content = $request->content;
-        $task->save();
+        $request->user()->tasks()->create([     // 2017/06/30 create方式に変更
+            'content' => $request->content,
+            'status' => $request->status,
+            'user_id' => $request->user_id,
+        ]);
 
         return redirect('/');
     }
@@ -97,10 +99,10 @@ class tasksController extends Controller
             'content' => 'required|max:255',    // 2017/06/22 追加
         ]);
 
-        $task = task::find($id);
-        $task->status = $request->status;   // 2017/06/22追加
-        $task->content = $request->content;
-        $task->save();
+        $request->user()->tasks()->where('id', $id)->update([     // 2017/06/30 update方式に変更
+            'content' => $request->content,
+            'status' => $request->status,
+        ]);
 
         return redirect('/');
     }
